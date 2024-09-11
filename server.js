@@ -27,12 +27,23 @@ const generateCrashPoint = () => {
   return (Math.random() * (5 - baseMultiplier) + baseMultiplier).toFixed(2);  // Random crash between baseMultiplier and 5x
 };
 
+// Function to reset all players' bets before starting a new round
+const resetPlayers = () => {
+  Object.keys(players).forEach((playerId) => {
+    players[playerId].betAmount = 0;
+    players[playerId].cashedOut = false;
+  });
+};
+
 // Function to start the game
 const startGame = () => {
   isGameRunning = true;
   currentMultiplier = baseMultiplier;  // Reset the current multiplier to baseMultiplier
   crashPoint = generateCrashPoint();
   console.log(`New Game Started! Crash point: ${crashPoint}x`);
+
+  // Reset players' bets before the new round starts
+  resetPlayers();
 
   // Broadcast game start to all clients
   io.emit('gameStart', { crashPoint });
