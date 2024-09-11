@@ -13,22 +13,24 @@ const PORT = process.env.PORT || 3000;
 // Serve the static HTML file
 app.use(express.static(path.join(__dirname)));
 
-// Game state variables
-let currentMultiplier = 1.0;
+// Game configuration variables
+const baseMultiplier = 0.1;  // Base multiplier for the start of the game
+let currentMultiplier = baseMultiplier;  // Start multiplier at baseMultiplier
 let isGameRunning = false;
 let crashPoint = 0;
 let interval = null;
 let players = {};  // Store player info: bets, cash-out status
 
-// Function to generate random crash point
+// Function to generate random crash point based on baseMultiplier
 const generateCrashPoint = () => {
-  return (Math.random() * (5 - 1.5) + 1.5).toFixed(2);  // Random crash between 1.5x and 5x
+  // Ensure crash point is generated starting from slightly above baseMultiplier
+  return (Math.random() * (5 - baseMultiplier) + baseMultiplier).toFixed(2);  // Random crash between baseMultiplier and 5x
 };
 
 // Function to start the game
 const startGame = () => {
   isGameRunning = true;
-  currentMultiplier = 1.0;
+  currentMultiplier = baseMultiplier;  // Reset the current multiplier to baseMultiplier
   crashPoint = generateCrashPoint();
   console.log(`New Game Started! Crash point: ${crashPoint}x`);
 
@@ -37,7 +39,7 @@ const startGame = () => {
 
   // Increment multiplier every 100ms
   interval = setInterval(() => {
-    currentMultiplier += 0.01;
+    currentMultiplier += 0.01;  // Increment multiplier
     io.emit('multiplierUpdate', { multiplier: currentMultiplier });
 
     // Check if crash point is reached
