@@ -89,7 +89,16 @@
       multiplierDiv.textContent = data.crashPoint + 'x (Crashed!)';
       multiplierDiv.classList.add('crashed');
       cashOutBtn.disabled = true;
-      messageDiv.textContent = '';
+      messageDiv.textContent = 'Game crashed! Waiting for the next round...';
+
+      // Reset buttons and bet input for the next round
+      setTimeout(() => {
+        betInput.disabled = false;
+        placeBetBtn.disabled = false;
+        cashOutBtn.disabled = true;
+        messageDiv.textContent = '';
+        hasPlacedBet = false; // Reset the bet state
+      }, 5000); // Reset UI after 5 seconds (or after the game restarts)
     });
 
     // Handle successful bet placement
